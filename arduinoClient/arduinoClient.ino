@@ -12,6 +12,7 @@ const char* mqtt_server = "farmer.cloudmqtt.com";
 #define MQTT_PASSWORD "V_5lMKhBkM-p"
 #define MQTT_SERIAL_PUBLISH_CH "/icircuit/ESP32/serialdata/tx"
 #define MQTT_SERIAL_RECEIVER_CH "/icircuit/ESP32/serialdata/rx"
+#define LED 13
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
 
@@ -19,14 +20,14 @@ PubSubClient client(wifiClient);
 float humidity = 0;
 float temp = 0;
 Weather sensor;
-double measurmentFrq = 0.1;
+float measurmentFrq = 0.1;
 
 
 void setup() {
   //debug
   Serial.begin(9600);
   Serial.println("starting setup");
-  pinMode(13, OUTPUT);
+  pinMode(LED, OUTPUT);
   setupSpark();
   setupWifi();
   setupMqtt();
@@ -43,7 +44,7 @@ void setupWifi() {
  WiFi.begin(ssid, password);
  while (WiFi.status() != WL_CONNECTED) {
   delay(500);
-  Serial.print(". ");
+  Serial.print(" . ");
  }
  Serial.println("ending setupWifi");
 }
@@ -58,15 +59,18 @@ void setupMqtt() {
 
 
 void loop() {
-  client.loop();
+  if(!client.loop()) {
+    client.reconnect();
+  }
   measure();
-  buildPayload();
-  publishPayload();
   Serial.print("temp: ");
   Serial.println(temp);
   Serial.print("Humidity: ");
   Serial.println(humidity);
-  delay((1/measurmentFrq) * 1000);
+  publishPayload();
+  digitalWrite(LED,HIGH);
+  delay(1/measurmentFrq * 1000);
+  digitalWrite(LED, LOW);
 
 }
 
