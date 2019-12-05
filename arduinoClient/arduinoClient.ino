@@ -1,4 +1,4 @@
-#include <SparkFun_Si7021_Breakout_Library.h>
+//D #include <SparkFun_Si7021_Breakout_Library.h>
 #include <PubSubClient.h>
 #include <Wire.h>
 #include <WiFi.h>
@@ -19,7 +19,7 @@ PubSubClient client(wifiClient);
 //Measurment
 float humidity = 0;
 float temp = 0;
-Weather sensor;
+//D Weather sensor;
 float measurmentFrq = 0.1;
 
 
@@ -35,7 +35,7 @@ void setup() {
 }
 void setupSpark() {
   Serial.println("Starting setupSpark");
-  sensor.begin();
+//D   sensor.begin();
   Serial.println("ending setupSpark");
 }
 
@@ -69,14 +69,14 @@ void loop() {
   Serial.println(humidity);
   publishPayload();
   digitalWrite(LED,HIGH);
-  delay(1/measurmentFrq * 1000);
+  delay(1/measurmentFrq * 10000);
   digitalWrite(LED, LOW);
 
 }
 
 void measure() {
-  humidity = sensor.getRH();
-  temp = sensor.readTemp();
+//D   humidity = sensor.getRH();
+//D   temp = sensor.readTemp();
 }
 
 //MQTTSTUFF
@@ -89,7 +89,7 @@ void publishPayload(char *data){
   char strHum[32];
   dtostrf(temp,5,2,strTmp);
   dtostrf(humidity,5,2,strHum);
-  client.beginPublish(MQTT_SERIAL_PUBLISH_CH,65,false);
+  client.beginPublish(MQTT_SERIAL_PUBLISH_CH,70,false);
   client.write(strtmp,32);
   client.write(":",1);
   client.write(strHum,32);
@@ -126,4 +126,6 @@ void callback,(char* topic, byte *payload, unsigned int length) {
     Serial.print("data:");
     Serial.write(payload, length);
     Serial.println();
+    //Very unsafe
+    //measurmentFrq = atof(payload)
 }
