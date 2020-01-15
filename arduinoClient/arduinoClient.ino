@@ -5,14 +5,14 @@
 #include <WiFi.h>
 
 // INTERNET
-const char* ssid = "somessid";
-const char* password = "apassword";
-const char* mqtt_server = "farmer.cloudmqtt.com";
-#define mqtt_port  11640
+const char* ssid = "jox";
+const char* password = "jox12345";
+const char* mqtt_server = "mqtt.jox.nu";
+#define mqtt_port  1883
 #define MQTT_USER "jjxnaifl"
 #define MQTT_PASSWORD "bd5eXyqRYirm"
-#define MQTT_READINGS_CH "/test/tx"
-#define MQTT_MEASURE_FREQENCY_CH "/test/rx"
+#define MQTT_READINGS_CH "/tmp"
+#define MQTT_MEASURE_FREQENCY_CH "/frq"
 #define LED 13
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
@@ -47,7 +47,7 @@ void setupWifi() {
   delay(500);
   Serial.print(" . ");
  }
- serial.println(" ")
+ Serial.println(" ");
  Serial.println("ending setupWifi");
 }
 //Handles recieved messages(poorly)
@@ -104,7 +104,7 @@ void reconnect() {
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
      //Create a random client ID
-    char[] clientId = "labviewIot";
+    char clientId[] = "labviewIot";
      //Attempt to connect
     if (client.connect(clientId,MQTT_USER,MQTT_PASSWORD)) {
       Serial.println("connected");
